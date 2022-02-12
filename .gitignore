@@ -4,3 +4,8 @@
 *.ptx
 *.cubin
 *.fatbin
+*.bak
+build
+doc
+.vscode
+CMaLists.txt

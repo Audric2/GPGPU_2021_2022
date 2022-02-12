@@ -5,7 +5,7 @@
 *.cubin
 *.fatbin
 *.bak
-build
-doc
-.vscode
-CMaLists.txt
+Project/build
+Project/doc
+Project/.vscode
+Project/CMakeLists.txt

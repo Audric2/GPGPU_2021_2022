@@ -854,7 +854,7 @@ __global__ void applyTexture(cudaSurfaceObject_t surface, uint32_t width, uint32
 	float4 colorpix;
 	surf2Dread(&colorpix, surface, x * sizeof(float4), y);
 	// nombre de fois que la texture se repete su l'ecran de 1024(<=64 pour etre coherent avec la texture de base 16x16) 
-	const int n = 32;
+	const int n = 16;
 	// Calcule la coordonnes dans la texture
 	const float sizeTexX = (float)width / (float)n;
 	const float sizeTexY = (float)height / (float)n;
@@ -878,9 +878,17 @@ void showOnly(cudaSurfaceObject_t surfaceOut, cudaSurfaceObject_t surfaceIn) {
 }
 
 // Applique la texture de tous les elements
-void applyTex2D(cudaSurfaceObject_t surface) {
+void applyTex2D(cudaSurfaceObject_t surface, char linear) {
 	dim3 threads(32, 32);
 	dim3 blocks(32, 32);
+
+	texBackground.filterMode = linear ? cudaFilterModeLinear : cudaFilterModePoint;
+	texRock.filterMode = linear ? cudaFilterModeLinear : cudaFilterModePoint;
+	texStick.filterMode = linear ? cudaFilterModeLinear : cudaFilterModePoint;
+	texWater.filterMode = linear ? cudaFilterModeLinear : cudaFilterModePoint;
+	texFood.filterMode = linear ? cudaFilterModeLinear : cudaFilterModePoint;
+	texAnthill.filterMode = linear ? cudaFilterModeLinear : cudaFilterModePoint;
+
 	applyTexture << <blocks, threads >> > (surface, 1024, 1024);
 }
 
@@ -941,7 +949,7 @@ char fromArrayToTex(float4 Array[16][16],texture<float4, 2, cudaReadModeElementT
 
 	//Association de la texture a son tableau de valeur
 	cudaBindTexture2D (&tex_ofs, tex, ArrayDevice, &tex->channelDesc,16, 16, pitch);
-	//tex.filterMode = cudaFilterModeLinear;
+	//tex->filterMode = cudaFilterModeLinear;
 	// On verifie quon a bien pas d'offset
 	if (tex_ofs) {
 		return 0;
@@ -951,6 +959,7 @@ char fromArrayToTex(float4 Array[16][16],texture<float4, 2, cudaReadModeElementT
 
 //Charge en memoire toutes les textures de tous les elements 
 char loadBMPs(FILE* fptrBackground, FILE* fptrRock, FILE* fptrStick, FILE* fptrWater, FILE* fptrFood, FILE* fptrAnthill) {
+	printf("Here\n");
 	float4 hostArray[16][16];
 	printf("Load Background\n");
 	if(!loadBMP(hostArray,fptrBackground)) return 0;

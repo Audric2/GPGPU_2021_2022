@@ -26,7 +26,7 @@ constexpr int32_t kHeight = 1024;
 
 char strStat[40];
 int frames = 0;
-char show = 0, showTexture = 1;
+char show = 0, showTexture = 1, linear = 0;
 bool reset = 0;
 std::chrono::time_point<std::chrono::system_clock> last = std::chrono::system_clock::now();
 
@@ -156,7 +156,7 @@ void main(int argc, char **argv) {
 			}
 			
 			if(sucessLoadBMPs && showTexture){
-				applyTex2D(surfaceAffiche);
+				applyTex2D(surfaceAffiche,linear);
 			}
 			cudaDestroySurfaceObject(surfaceAffiche);
 			cudaGraphicsUnmapResources(1, &cuda_graphic_resource);
@@ -244,6 +244,9 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
 			break;
 		case GLFW_KEY_T:
 			showTexture = !showTexture;
+			break;
+		case GLFW_KEY_L:
+			linear = !linear;
 			break;
 		default:
 			show = 0;

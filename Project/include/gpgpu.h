@@ -19,4 +19,4 @@ void showOnly(cudaSurfaceObject_t, cudaSurfaceObject_t);
 
 char loadBMPs(FILE *fptrBackground, FILE *fptrRock, FILE *fptrStick, FILE *fptrWater, FILE *fptrFood, FILE *fptrAnthill);
 
-void applyTex2D(cudaSurfaceObject_t surface);
+void applyTex2D(cudaSurfaceObject_t surface, char Linear);

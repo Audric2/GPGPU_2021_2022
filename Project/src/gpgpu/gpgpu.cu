@@ -959,7 +959,6 @@ char fromArrayToTex(float4 Array[16][16],texture<float4, 2, cudaReadModeElementT
 
 //Charge en memoire toutes les textures de tous les elements 
 char loadBMPs(FILE* fptrBackground, FILE* fptrRock, FILE* fptrStick, FILE* fptrWater, FILE* fptrFood, FILE* fptrAnthill) {
-	printf("Here\n");
 	float4 hostArray[16][16];
 	printf("Load Background\n");
 	if(!loadBMP(hostArray,fptrBackground)) return 0;

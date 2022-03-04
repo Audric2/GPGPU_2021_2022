@@ -26,7 +26,7 @@ constexpr int32_t kHeight = 1024;
 
 char strStat[40];
 int frames = 0;
-int show = 0;
+char show = 0, showTexture = 1;
 bool reset = 0;
 std::chrono::time_point<std::chrono::system_clock> last = std::chrono::system_clock::now();
 
@@ -53,7 +53,6 @@ void main(int argc, char **argv) {
 		glGenTextures(1, &texture);
 		glBindTexture(GL_TEXTURE_2D, texture);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, 1024, 1024, 0, GL_RGBA, GL_FLOAT, nullptr);
 		glBindTexture(GL_TEXTURE_2D, 0);
 		cudaGLSetGLDevice(0);
@@ -156,7 +155,7 @@ void main(int argc, char **argv) {
 				}
 			}
 			
-			if(sucessLoadBMPs){
+			if(sucessLoadBMPs && showTexture){
 				applyTex2D(surfaceAffiche);
 			}
 			cudaDestroySurfaceObject(surfaceAffiche);
@@ -210,6 +209,7 @@ void showFPS(GLFWwindow * window) {
 
 
 static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
+	static char unlimited = 1;
 	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
 		glfwSetWindowShouldClose(window, GLFW_TRUE);
 
@@ -237,6 +237,13 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
 			break;
 		case GLFW_KEY_KP_SUBTRACT:
 			show = show ? show - 1 : 4;
+			break;
+		case GLFW_KEY_U:
+			unlimited = !unlimited;
+			glfwSwapInterval(unlimited);
+			break;
+		case GLFW_KEY_T:
+			showTexture = !showTexture;
 			break;
 		default:
 			show = 0;

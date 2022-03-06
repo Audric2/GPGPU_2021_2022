@@ -121,7 +121,7 @@ void main(int argc, char **argv) {
 		if(fptrFood) fclose(fptrFood);
 		if(fptrAnthill) fclose(fptrAnthill);
 		
-		//Main loop
+		// Main loop
 		while (!glfwWindowShouldClose(window)) {
 			showFPS(window);
 			glfwPollEvents();

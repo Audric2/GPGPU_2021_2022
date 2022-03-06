@@ -66,7 +66,7 @@ constexpr float AngleChocFourmi = 1 * PI / 6.f;
 constexpr float deltaPosChocFourmi = 1 * 1 * SIZE_PIXEL;
 // Perte de la puissance de pheromone par frame
 constexpr float lostWeightPerFrame = 1.f/(1024.f);
-// Tres grande valeur utilisee pour faire des test de compraison
+// Tres grande valeur utilisee pour faire des test de comparaison
 constexpr float InfinityF = HUGE_VALF;
 
 // Definition d'un rocher
@@ -110,7 +110,7 @@ typedef struct Ant {
 	int type;
 } Ant;
 
-// Definition des tableaux des diffferentes structures 
+// Definition des tableaux des differentes structures 
 int nbRocks;
 Rock * device_rocks = nullptr;
 int nbSticks;
@@ -238,7 +238,7 @@ __device__  bool getDirectionWeight(cudaSurfaceObject_t surfaceMapRessources, cu
 }
 
 // Calcule la direction que la fourmi en index va prendre, basee sur la case avec la valeur de pheromone la plus grande
-// Plus utilisee
+// Inutilisee au profit de getDirectionWeight, mais version demandee par l'enonce
 __device__  bool getDirectionMax(cudaSurfaceObject_t surfaceMapRessources, cudaSurfaceObject_t surfacePheromones, uint32_t width, uint32_t height, int index, Ant* ant) {
 	float x = 0, y = 0;
 	const float posX = (ant->p.x + cos(ant->direction) * (ANT_RAD_SEARCH + SIZE_PIXEL));
@@ -321,7 +321,7 @@ __device__  bool getDirectionMax(cudaSurfaceObject_t surfaceMapRessources, cudaS
 	return true;
 }
 
-// Fonction de premiere ecriture de la surFacePheromones
+// Initialisation de la surFacePheromones
 __global__  void kernel_init_draw_pheromone(cudaSurfaceObject_t surfacePheromones, cudaSurfaceObject_t surfaceRessources, uint32_t width, uint32_t height) {
 	int32_t x = blockIdx.x * blockDim.x + threadIdx.x;
 	int32_t y = blockIdx.y * blockDim.y + threadIdx.y;
@@ -331,14 +331,14 @@ __global__  void kernel_init_draw_pheromone(cudaSurfaceObject_t surfacePheromone
 	surf2Dwrite(colorPheromone, surfacePheromones, x * sizeof(float4), y);
 }
 
-// Fonction de premiere ecriture de la surfaceAnts
+// Initialisation de la surfaceAnts
 __global__  void kernel_init_draw_ants(cudaSurfaceObject_t surfaceAnts, uint32_t width, uint32_t height) {
 	int32_t x = blockIdx.x * blockDim.x + threadIdx.x;
 	int32_t y = blockIdx.y * blockDim.y + threadIdx.y;
 	surf2Dwrite(COLOR_VOID, surfaceAnts, x * sizeof(float4), y);
 }
 
-// Fonction de premiere ecriture de la surfaceMap
+// Initialisation de la surfaceMap
 __global__  void kernel_init_draw_map(cudaSurfaceObject_t surfaceMap, uint32_t width, uint32_t height, Rock* rocks, int nbRocks, Stick* sticks, int nbSticks) {
 	int32_t x = blockIdx.x * blockDim.x + threadIdx.x;
 	int32_t y = blockIdx.y * blockDim.y + threadIdx.y;
@@ -361,7 +361,7 @@ __global__  void kernel_init_draw_map(cudaSurfaceObject_t surfaceMap, uint32_t w
 	surf2Dwrite(COLOR_BACKGROUND, surfaceMap, x * sizeof(float4), y);
 }
 
-// Fonction de premiere ecriture de la surfaceRessource
+// Initialisation de la surfaceRessource
 __global__  void kernel_init_draw_ressources(cudaSurfaceObject_t surfaceRessource, cudaSurfaceObject_t surfaceMap, uint32_t width, uint32_t height, Water* waters, int nbWaters, Food* foods, int nbFoods, Anthill* anthills, int nbAnthills) {
 	int32_t x = blockIdx.x * blockDim.x + threadIdx.x;
 	int32_t y = blockIdx.y * blockDim.y + threadIdx.y;
@@ -472,7 +472,7 @@ __global__  void kernel_draw_ant(cudaSurfaceObject_t surfaceMapRessources, cudaS
 		ants[index].pheromonePower = 1.f;
 	}else if(ants[index].type != ANT_SEARCH && colorpix == COLOR_ANTHILL) {
 		/** Certaines ecritures ne sont pas protegees par des semaphores, ne sont pas atomiques 
-		*	et n'etaient pas protegeable simplement avec un __syncthread
+		*	et n'etaient pas protegeables simplement avec un __syncthread
 		*	donc dans la suite du code il y a des ecritures/lecture concurrentes entre les threads qui ne sont pas gerees :
 		*	 - lors de l'augmentation de l'eau de la fourmiliere
 		*	 - lors de l'augmentation de la nourriture de la fourmiliere
